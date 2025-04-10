@@ -14,7 +14,7 @@
             font-family: 'Poppins', sans-serif;
             height: 100vh;
         }
-        
+
         #canvas-container {
             position: fixed;
             top: 0;
@@ -44,18 +44,13 @@
             <div class="logo">
                 <i class="fas fa-building"></i>
             </div>
-            <div class="back-btn">
-                
-            </div>
+            <div class="back-btn"></div>
             <div class="breadcrumb">
                 <a href="world.html" class="breadcrumb-item">World</a>
                 <span class="breadcrumb-separator">›</span>
                 <a href="dubai.html" class="breadcrumb-item">Dubai</a>
-                <!-- <span class="breadcrumb-separator">›</span>
-                <span class="breadcrumb-item current">Park Tower</span> -->
             </div>
         </div>
-        <!-- Mobile Menu Button -->
         <div class="mobile-menu-btn">
             <i class="fas fa-bars"></i>
         </div>
@@ -71,7 +66,6 @@
         </div>
     </div>
 
-    <!-- Mobile Menu (Hidden by default) -->
     <div class="mobile-menu">
         <div class="mobile-menu-item">
             <i class="fas fa-eye"></i>
@@ -85,35 +79,26 @@
 
     <div id="canvas-container"></div>
     <div id="dubai-label">Dubai</div>
-    
+
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/three@0.136.0';
         import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136.0/examples/jsm/controls/OrbitControls.js';
-        
+
         function createGlobe() {
-            // Scene setup
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x000020);
-            
-            // Camera setup
+
             const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
             camera.position.z = 4;
-            
-            // Renderer
-            const renderer = new THREE.WebGLRenderer({ 
-                antialias: true,
-                alpha: true
-            });
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            const container = document.getElementById('canvas-container');
-            container.appendChild(renderer.domElement);
-            
-            // Raycaster for mouse interaction
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
-            
-            // Orbit Controls
+
             const controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
@@ -121,29 +106,27 @@
             controls.enableRotate = true;
             controls.enableZoom = false;
             controls.enablePan = false;
-            
-            // Lighting
+
             const ambientLight = new THREE.AmbientLight(0x404040);
             scene.add(ambientLight);
-            
+
             const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
             directionalLight.position.set(5, 5, 5);
             scene.add(directionalLight);
-            
-            // Create Starfield
+
             function createStarfield() {
                 const starGeometry = new THREE.BufferGeometry();
                 const starCount = 20000;
                 const positions = new Float32Array(starCount * 3);
-                
+
                 for (let i = 0; i < starCount; i++) {
                     positions[i * 3] = THREE.MathUtils.randFloatSpread(2000);
                     positions[i * 3 + 1] = THREE.MathUtils.randFloatSpread(2000);
                     positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(2000);
                 }
-                
+
                 starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                
+
                 const starMaterial = new THREE.PointsMaterial({
                     color: 0xffffff,
                     size: 0.5,
@@ -151,14 +134,12 @@
                     transparent: true,
                     opacity: 0.8
                 });
-                
+
                 const starField = new THREE.Points(starGeometry, starMaterial);
                 scene.add(starField);
-                
                 return starField;
             }
-            
-            // Earth Setup
+
             const textureLoader = new THREE.TextureLoader();
             const earthGeometry = new THREE.SphereGeometry(1, 64, 64);
             const earthMaterial = new THREE.MeshPhongMaterial({
@@ -166,179 +147,130 @@
                 bumpMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_normal_2048.jpg'),
                 bumpScale: 0.05
             });
-            
             const earth = new THREE.Mesh(earthGeometry, earthMaterial);
             scene.add(earth);
-            
-            // Cloud Layer
+
             const cloudGeometry = new THREE.SphereGeometry(1.02, 64, 64);
             const cloudMaterial = new THREE.MeshPhongMaterial({
                 map: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/earth_clouds_1024.png'),
                 transparent: true,
                 opacity: 0.8
             });
-            
             const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
             scene.add(clouds);
-            
-            // Add Dubai Marker
+
             function addDubaiMarker() {
-                // Dubai coordinates
                 const lat = 25.276987;
                 const lng = 55.296249;
-                
-                // Convert latitude and longitude to 3D position
+
                 const phi = (90 - lat) * (Math.PI / 180);
                 const theta = (lng + 180) * (Math.PI / 180);
-                
-                const radius = 1.02; // Slightly above the earth's surface
+
+                const radius = 1.02;
                 const x = -radius * Math.sin(phi) * Math.cos(theta);
                 const y = radius * Math.cos(phi);
                 const z = radius * Math.sin(phi) * Math.sin(theta);
-                
-                // Create marker
+
                 const markerGeometry = new THREE.SphereGeometry(0.02, 16, 16);
-                const markerMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0xff0000,  // Bright red marker
+                const markerMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xff0000,
                     transparent: true,
                     opacity: 0.8
                 });
                 const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-                
                 marker.position.set(x, y, z);
-                // Add a name to identify it when clicked
                 marker.name = "dubaiMarker";
                 scene.add(marker);
-                
+
                 return { marker, x, y, z };
             }
-            
-            // Create background elements
-            const nebulasGroup = createCosmicBackground();
+
             const starField = createStarfield();
-            
-            // Add Dubai Marker
             const dubaiMarker = addDubaiMarker();
-            
-            // Slow rotation for background
-            let nebulaRotationSpeed = 0.0001;
-            
-            // Label positioning
+
             const dubaiLabel = document.getElementById('dubai-label');
-            
-            // Make the label clickable
             dubaiLabel.style.pointerEvents = 'auto';
             dubaiLabel.style.cursor = 'pointer';
-            dubaiLabel.addEventListener('click', function() {
+            dubaiLabel.addEventListener('click', function () {
                 window.location.href = '/dubai.html';
             });
-            
-            // Handle mouse click events
+
             function onMouseClick(event) {
-                // Calculate mouse position in normalized device coordinates
                 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                
-                // Update the raycaster with the camera and mouse position
+
                 raycaster.setFromCamera(mouse, camera);
-                
-                // Calculate objects intersecting the ray
                 const intersects = raycaster.intersectObjects(scene.children);
-                
-                // Check if the dubai marker was clicked
+
                 for (let i = 0; i < intersects.length; i++) {
                     if (intersects[i].object.name === 'dubaiMarker') {
-                        // Navigate to dubai.html
                         window.location.href = '/dubai.html';
                         break;
                     }
                 }
             }
-            
-            // Add event listener for clicks
+
             renderer.domElement.addEventListener('click', onMouseClick, false);
-            
-            // Handle mouse movement for hover effects
+
             function onMouseMove(event) {
-                // Calculate mouse position in normalized device coordinates
                 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                
-                // Update the raycaster
+
                 raycaster.setFromCamera(mouse, camera);
-                
-                // Calculate objects intersecting the ray
                 const intersects = raycaster.intersectObjects(scene.children);
-                
-                // Check if mouse is over the Dubai marker
+
                 let isOverMarker = false;
                 for (let i = 0; i < intersects.length; i++) {
                     if (intersects[i].object.name === 'dubaiMarker') {
                         isOverMarker = true;
-                        // Make the marker slightly larger on hover
                         dubaiMarker.marker.scale.set(1.2, 1.2, 1.2);
-                        // Change cursor to pointer
                         document.body.style.cursor = 'pointer';
                         break;
                     }
                 }
-                
-                // Reset if not hovering over marker
+
                 if (!isOverMarker) {
                     dubaiMarker.marker.scale.set(1, 1, 1);
                     document.body.style.cursor = 'auto';
                 }
             }
-            
-            // Add event listener for mouse movement
+
             renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-            
-            // Animation Loop
+
             function animate() {
                 requestAnimationFrame(animate);
-                
-                // Very slow nebula rotation
-                nebulasGroup.rotation.y += nebulaRotationSpeed;
-                
-                // Update controls
+
                 controls.update();
-                
-                // Project 3D marker position to 2D screen coordinates
+
                 const vector = dubaiMarker.marker.position.clone().project(camera);
                 vector.x = (vector.x + 1) / 2 * window.innerWidth;
                 vector.y = -(vector.y - 1) / 2 * window.innerHeight;
-                
-                // Update label position
+
                 dubaiLabel.style.left = `${vector.x}px`;
                 dubaiLabel.style.top = `${vector.y}px`;
-                
-                // Show/hide label based on marker visibility
+
                 const distance = dubaiMarker.marker.position.distanceTo(camera.position);
-                if (distance < 4 && Math.abs(vector.x) < window.innerWidth && 
+                if (distance < 4 && Math.abs(vector.x) < window.innerWidth &&
                     Math.abs(vector.y) < window.innerHeight) {
                     dubaiLabel.style.display = 'block';
                 } else {
                     dubaiLabel.style.display = 'none';
                 }
-                
-                // Render
+
                 renderer.render(scene, camera);
             }
-            
-            // Window Resize Handler
+
             function onWindowResize() {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
-            
+
             window.addEventListener('resize', onWindowResize, false);
-            
-            // Start Animation
+
             animate();
         }
-        
-        // Initialize Globe
+
         createGlobe();
     </script>
 </body>
