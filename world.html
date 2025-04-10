@@ -130,44 +130,44 @@
             directionalLight.position.set(5, 5, 5);
             scene.add(directionalLight);
             
-            // Cosmic Nebula Background
-            function createCosmicBackground() {
-                const textureLoader = new THREE.TextureLoader();
+            // // Cosmic Nebula Background
+            // function createCosmicBackground() {
+            //     const textureLoader = new THREE.TextureLoader();
                 
-                // Nebula Texture
-                const nebulaTex = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/sprite_nebula.png');
+            //     // Nebula Texture
+            //     const nebulaTex = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/sprite_nebula.png');
                 
-                // Create multiple nebula layers for depth
-                const nebulasGroup = new THREE.Group();
+            //     // Create multiple nebula layers for depth
+            //     const nebulasGroup = new THREE.Group();
                 
-                // First layer of nebula
-                const nebula1Geometry = new THREE.SphereGeometry(1000, 64, 64);
-                const nebula1Material = new THREE.MeshBasicMaterial({
-                    map: nebulaTex,
-                    color: 0x4040ff,
-                    transparent: true,
-                    opacity: 0.3,
-                    blending: THREE.AdditiveBlending
-                });
-                const nebula1 = new THREE.Mesh(nebula1Geometry, nebula1Material);
-                nebulasGroup.add(nebula1);
+            //     // First layer of nebula
+            //     const nebula1Geometry = new THREE.SphereGeometry(1000, 64, 64);
+            //     const nebula1Material = new THREE.MeshBasicMaterial({
+            //         map: nebulaTex,
+            //         color: 0x4040ff,
+            //         transparent: true,
+            //         opacity: 0.3,
+            //         blending: THREE.AdditiveBlending
+            //     });
+            //     const nebula1 = new THREE.Mesh(nebula1Geometry, nebula1Material);
+            //     nebulasGroup.add(nebula1);
                 
-                // Second layer of nebula
-                const nebula2Geometry = new THREE.SphereGeometry(1100, 64, 64);
-                const nebula2Material = new THREE.MeshBasicMaterial({
-                    map: nebulaTex,
-                    color: 0x8020ff,
-                    transparent: true,
-                    opacity: 0.2,
-                    blending: THREE.AdditiveBlending
-                });
-                const nebula2 = new THREE.Mesh(nebula2Geometry, nebula2Material);
-                nebulasGroup.add(nebula2);
+            //     // Second layer of nebula
+            //     const nebula2Geometry = new THREE.SphereGeometry(1100, 64, 64);
+            //     const nebula2Material = new THREE.MeshBasicMaterial({
+            //         map: nebulaTex,
+            //         color: 0x8020ff,
+            //         transparent: true,
+            //         opacity: 0.2,
+            //         blending: THREE.AdditiveBlending
+            //     });
+            //     const nebula2 = new THREE.Mesh(nebula2Geometry, nebula2Material);
+            //     nebulasGroup.add(nebula2);
                 
-                scene.add(nebulasGroup);
+            //     scene.add(nebulasGroup);
                 
-                return nebulasGroup;
-            }
+            //     return nebulasGroup;
+            // }
             
             // Create Starfield
             function createStarfield() {
